@@ -1,5 +1,1 @@
-mkdocs
-mkdocs-material
-mkdocstrings[python]
-opencv-python
-pycocowriter
+-r requirements/prod.txt

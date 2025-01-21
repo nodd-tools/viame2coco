@@ -1,10 +1,10 @@
-# repo name
+# viame2coco
 
-Describe your project here
+This package contains tools for converting VIAME-style annotation csv output into COCO format.
 
 # Installation
 
-Put installation instructions here
+`pip install viame2coco`
 
 # Contributing
 

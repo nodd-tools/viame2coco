@@ -1,0 +1,4 @@
+-r common.txt
+mkdocs
+mkdocs-material
+mkdocstrings[python]

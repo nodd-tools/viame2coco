@@ -1,6 +1,6 @@
 site_name: viame2coco
 
-repo_url: TODO: your repository url
+repo_url: https://github.com/nodd-tools/viame2coco
 
 theme:
   name: material
@@ -26,4 +26,5 @@ nav:
   - Contributing: CONTRIBUTING.md
   - Code of Conduct: CODE_OF_CONDUCT.md
   - Code Reference:
-      - Some Module: api/some_module.md
+      - Viame2COCO: api/viame2coco.md
+      - Viame Manual Annotation Tools: api/viame_manual_annotations.md
