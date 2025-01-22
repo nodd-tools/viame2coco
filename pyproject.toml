@@ -3,13 +3,15 @@ requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
 [project]
-name = viame2coco
+name = "viame2coco"
 version = "0.1.0"
-description = tools to convert VIAME output to COCO format
+description = "tools to convert VIAME output to COCO format"
 authors = [
-    { name = CScott Brown },
+    { name = "CScott Brown" },
 ]
 dependencies = [
+  "pycocowriter",
+  "opencv-python"
 ]
 readme = "README.md"
 classifiers = [
