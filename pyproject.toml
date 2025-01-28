@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "viame2coco"
-version = "0.1.1"
+version = "0.1.2"
 description = "tools to convert VIAME output to COCO format"
 authors = [
     { name = "CScott Brown" },
@@ -17,3 +17,7 @@ readme = "README.md"
 classifiers = [
     "Programming Language :: Python :: 3",
 ]
+
+[project.urls]
+Documentation = "https://nodd-tools.github.io/viame2coco/"
+Source = "https://github.com/nodd-tools/viame2coco"
