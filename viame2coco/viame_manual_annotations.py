@@ -58,7 +58,6 @@ def extract_frame_microseconds(
     cv2_video_cap.set(cv2.CAP_PROP_POS_MSEC, microseconds // 1000)
     success, image = cv2_video_cap.read()
     if outfile is not None:
-        print(outfile)
         cv2.imwrite(outfile, image)
     return image
 
