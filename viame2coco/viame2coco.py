@@ -15,9 +15,6 @@ COCO_CC0_LICENSE = COCOLicense(
 )
 
 viame_csv_config = {
-    'meta': {
-        'skiprows': 2
-    },
     'filename': 1,
     'label': 9, 
     'bbox_tlbr': {
@@ -27,6 +24,46 @@ viame_csv_config = {
         'bry': 5
     }
 }
+
+def is_viame_metadata_row(row: Sequence[str]) -> bool:
+    '''
+    determines whether this row is a "metadata" row in a viame
+    csv
+
+    Parameters
+    ----------
+    row: Sequence[str]
+    a row read in from a VIAME-style annotation csv
+
+    Returns
+    -------
+    is_metadata: bool
+    true if the row arg is a metadata row
+    '''
+    is_metadata = row[0].startswith('#')
+    return is_metadata
+
+def skip_viame_metadata_rows(
+        viame_rows: Iterable[Sequence[str]]) -> Iterable[Sequence[str]]:
+    '''
+    skip any metadata rows in a sequence of VIAME-style annotation rows
+    as read from a VIAME output csv
+
+    Parameters
+    ----------
+    viame_rows: Iterable[Sequence[str]]
+    an iterable of rows as read from a VIAME-style annotation csv output
+
+    Returns
+    -------
+    viame_rows: Iterable[Sequence[str]]
+    the same iterable of rows, but having skipped any metadata rows
+    '''
+    row = next(viame_rows)
+    while is_viame_metadata_row(row):
+        row = next(viame_rows)
+    yield row
+    yield from viame_rows
 
 def passrows(iterable: Iterable, n: int = 0) -> Iterable:
     '''
@@ -90,17 +127,15 @@ def viame2coco_data(
     '''
     with open(viame_csv_file, 'r') as f:
         reader = csv.reader(f)
+        data = skip_viame_metadata_rows(reader)
         if video_file is not None:
-            reader = itertools.chain(
-                passrows(reader, 2),
-                extract_viame_video_annotations(
-                    reader, video_file, outfile_dir=video_frame_outfile_dir
-                )
+            data = extract_viame_video_annotations(
+                data, video_file, outfile_dir=video_frame_outfile_dir
             )
         csv2coco = Iterable2COCO(
             Iterable2COCOConfig(viame_csv_config)
         )
-        images, annotations, categories = csv2coco.parse(reader)
+        images, annotations, categories = csv2coco.parse(data)
         return images, annotations, categories
 
 def viame2coco(

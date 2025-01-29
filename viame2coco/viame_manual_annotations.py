@@ -13,8 +13,8 @@ def time2micros(time: datetime.time) -> float:
 
     ```
     >>> time2micros(datetime.time(1,1,1)) # 1 hour, 1 min, 1 sec
-    3661000000 
-    
+    3661000000
+ 
     ```
 
     Parameters
