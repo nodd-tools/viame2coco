@@ -14,7 +14,7 @@ COCO_CC0_LICENSE = COCOLicense(
     'https://creativecommons.org/public-domain/cc0/'
 )
 
-viame_csv_config = {
+viame_csv_config_default = {
     'filename': 1,
     'label': 9, 
     'bbox_tlbr': {
@@ -89,7 +89,8 @@ def passrows(iterable: Iterable, n: int = 0) -> Iterable:
 def viame2coco_data(
         viame_csv_file: str, 
         video_file: str | None = None, 
-        video_frame_outfile_dir: str | None = None) -> tuple[
+        video_frame_outfile_dir: str | None = None, 
+        viame_csv_config : dict | None = None) -> tuple[
             list[pycocowriter.coco.COCOImage],
             list[pycocowriter.coco.COCOAnnotation],
             list[pycocowriter.coco.COCOCategory]
@@ -112,6 +113,11 @@ def viame2coco_data(
         are for images), then this should be None
     video_frame_outfile_dir: str | None
         a directory to which the extracted frames are writ
+    viame_csv_config : dict | None
+        the dictionary that specifies which fields are present, 
+        and in which columns they are located. 
+        Passed to pycocowriter.csv2coco.Iterable2COCOConfig. 
+        If None, then viame2coco.viame2coco.viame_csv_config is used
     
     Returns
     -------
@@ -128,10 +134,16 @@ def viame2coco_data(
     with open(viame_csv_file, 'r') as f:
         reader = csv.reader(f)
         data = skip_viame_metadata_rows(reader)
-        if video_file is not None:
+        if video_file is not None:            
+            #TODO probably should hoist this into a higher function            
+            if video_frame_outfile_dir is None:
+                csv_location = os.path.split(viame_csv_file)[0]
+                video_frame_outfile_dir = csv_location
             data = extract_viame_video_annotations(
                 data, video_file, outfile_dir=video_frame_outfile_dir
             )
+        if viame_csv_config is None:
+            viame_csv_config = viame_csv_config_default
         csv2coco = Iterable2COCO(
             Iterable2COCOConfig(viame_csv_config)
         )
@@ -143,6 +155,7 @@ def viame2coco(
         description: str, 
         video_file: str | None = None, 
         video_frame_outfile_dir: str | None = None,
+        viame_csv_config : dict | None = None, 
         license: pycocowriter.coco.COCOLicense = COCO_CC0_LICENSE, 
         version: str = '0.1') -> pycocowriter.coco.COCOData:
     '''
@@ -160,6 +173,10 @@ def viame2coco(
         are for images), then this should be None
     video_frame_outfile_dir: str | None
         a directory to which the extracted frames are writ
+    viame_csv_config : dict | None
+        the dictionary that specifies which fields are present, 
+        and in which columns they are located. 
+        If None, then viame2coco.viame2coco.viame_csv_config is used
     license: COCOLicense
         the license under which these images are provided
         Defaults to CC0 https://creativecommons.org/public-domain/cc0/
@@ -176,13 +193,10 @@ def viame2coco(
         date_created = now
     )
 
-    #TODO probably should hoist this into a higher function
-    csv_location = os.path.split(viame_csv_file)[0]
-    if video_frame_outfile_dir is None:
-        video_frame_outfile_dir = csv_location
     images, annotations, categories = viame2coco_data(
         viame_csv_file, video_file=video_file, 
-        video_frame_outfile_dir=video_frame_outfile_dir
+        video_frame_outfile_dir=video_frame_outfile_dir, 
+        viame_csv_config = viame_csv_config
     )
 
     return COCOData(
