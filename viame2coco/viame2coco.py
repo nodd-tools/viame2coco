@@ -7,6 +7,9 @@ import pycocowriter.coco
 from pycocowriter.csv2coco import Iterable2COCO, Iterable2COCOConfig
 from pycocowriter.coco import COCOLicense, COCOInfo, COCOData
 from .viame_manual_annotations import *
+import logging
+
+logger = logging.getLogger(__name__)
 
 COCO_CC0_LICENSE = COCOLicense(
     'CC0 1.0 Universal',
@@ -64,6 +67,50 @@ def skip_viame_metadata_rows(
         row = next(viame_rows)
     yield row
     yield from viame_rows
+
+def read_viame_metadata_rows(
+        viame_rows: Iterable[Sequence[str]]) -> tuple[list[Sequence[str]], Iterable[Sequence[str]]]:
+    '''
+    skip any metadata rows in a sequence of VIAME-style annotation rows
+    as read from a VIAME output csv, and return those rows along with the remainder
+    of the annotations iterator.
+
+    Parameters
+    ----------
+    viame_rows: Iterable[Sequence[str]]
+    an iterable of rows as read from a VIAME-style annotation csv output
+
+    Returns
+    -------
+    metadata_rows: list[Sequence[str]]
+    the metadata rows
+
+    viame_rows: Iterable[Sequence[str]]
+    the same iterable of rows, but having skipped any metadata rows
+    '''
+    metadata_rows = []
+    for row in viame_rows:
+        if not is_viame_metadata_row(row):
+            return metadata_rows, itertools.chain([row], viame_rows)
+        metadata_rows.append(row)
+    return metadata_rows, iter(())
+
+def determine_viame_version(viame_metadata_rows: list[Sequence[str]]) -> int:
+    '''
+    Determine the viame "version" from the metadata rows.
+    We need these to figure out how to parse the remainder of the file
+
+    Parameters
+    ----------
+    viame_metadata_rows: list[Sequence[str]]
+    rows read by `read_viame_metadata_rows`
+
+    Returns
+    ----------
+    version: int
+    a pseudo-version of VIAME that we can use to parse the rest of the file
+    '''
+    logger.info('\n'.join(map(', '.join, metadata_rows)))
 
 def passrows(iterable: Iterable, n: int = 0) -> Iterable:
     '''
@@ -133,7 +180,8 @@ def viame2coco_data(
     '''
     with open(viame_csv_file, 'r') as f:
         reader = csv.reader(f)
-        data = skip_viame_metadata_rows(reader)
+        metadata, data = read_viame_metadata_rows(reader)
+        viame_version = determine_viame_version(metadata)
         if video_file is not None:            
             #TODO probably should hoist this into a higher function            
             if video_frame_outfile_dir is None:
