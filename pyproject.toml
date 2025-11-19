@@ -11,7 +11,8 @@ authors = [
 ]
 dependencies = [
   "pycocowriter",
-  "opencv-python"
+  "opencv-python",
+  "pillow"
 ]
 readme = "README.md"
 classifiers = [
@@ -21,3 +22,11 @@ classifiers = [
 [project.urls]
 Documentation = "https://nodd-tools.github.io/viame2coco/"
 Source = "https://github.com/nodd-tools/viame2coco"
+
+[project.optional-dependencies]
+dev = [
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocstrings[python]",
+  "jupyter"
+]
