@@ -3,6 +3,9 @@ import os
 import datetime
 import numpy as np
 from collections.abc import Sequence, Iterable
+import logging
+
+logger = logging.getLogger(__name__)
 
 MS2S = 1000000
 MS2M = MS2S*60
@@ -182,6 +185,7 @@ def extract_viame_video_annotations(
         frame_time = datetime.time.fromisoformat(row[VIAME_VIDEO_TIME_COL])
         microseconds = time2micros(frame_time)
         frame_filename = construct_image_filename_from_video_frame(video_filename_leaf, frame_time, outfile_format, outfile_dir)
+        logger.info('extracting frame from {} at time {}'.format(frame_filename, microseconds))
         extract_frame_microseconds(cap, microseconds, frame_filename)
         row[VIAME_VIDEO_TIME_COL] = frame_filename
         yield row
