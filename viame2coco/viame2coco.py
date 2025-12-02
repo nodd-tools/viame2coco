@@ -38,12 +38,12 @@ def is_viame_metadata_row(row: Sequence[str]) -> bool:
     Parameters
     ----------
     row: Sequence[str]
-    a row read in from a VIAME-style annotation csv
+        a row read in from a VIAME-style annotation csv
 
     Returns
     -------
     is_metadata: bool
-    true if the row arg is a metadata row
+        true if the row arg is a metadata row
     '''
     is_metadata = row[0].startswith('#')
     return is_metadata
@@ -57,12 +57,12 @@ def skip_viame_metadata_rows(
     Parameters
     ----------
     viame_rows: Iterable[Sequence[str]]
-    an iterable of rows as read from a VIAME-style annotation csv output
+        an iterable of rows as read from a VIAME-style annotation csv output
 
     Returns
     -------
     viame_rows: Iterable[Sequence[str]]
-    the same iterable of rows, but having skipped any metadata rows
+        the same iterable of rows, but having skipped any metadata rows
     '''
     row = next(viame_rows)
     while is_viame_metadata_row(row):
@@ -80,15 +80,15 @@ def read_viame_metadata_rows(
     Parameters
     ----------
     viame_rows: Iterable[Sequence[str]]
-    an iterable of rows as read from a VIAME-style annotation csv output
+        an iterable of rows as read from a VIAME-style annotation csv output
 
     Returns
     -------
     metadata_rows: list[Sequence[str]]
-    the metadata rows
+        the metadata rows
 
     viame_rows: Iterable[Sequence[str]]
-    the same iterable of rows, but having skipped any metadata rows
+        the same iterable of rows, but having skipped any metadata rows
     '''
     metadata_rows = []
     for row in viame_rows:
@@ -186,18 +186,18 @@ def determine_viame_version(viame_metadata_rows: list[Sequence[str]]) -> int:
     Parameters
     ----------
     viame_metadata_rows: list[Sequence[str]]
-    rows read by `read_viame_metadata_rows`
+        rows read by `read_viame_metadata_rows`
 
     Returns
     ----------
     version: int
-    a pseudo-version of VIAME that we can use to parse the rest of the file
+        a pseudo-version of VIAME that we can use to parse the rest of the file
 
     fps: int | None
-    the framerate of the annotations, read from the metadata or None if no fps present
+        the framerate of the annotations, read from the metadata or None if no fps present
 
     timestamp: datetime.datetime | None
-    the date/time stamp of the annotations, read from the metadata or None if no timestamp present
+        the date/time stamp of the annotations, read from the metadata or None if no timestamp present
     '''
     version, fps, timestamp = None, None, None
     raw_metadata = ''.join(map(''.join, viame_metadata_rows))
@@ -239,19 +239,19 @@ def deal_with_viame_timestamps(viame_rows: Iterable[Sequence[str]], version: int
     Parameters
     ----------
     viame_rows: Iterable[Sequence[str]]
-    The actual data rows from the viame csv
+        The actual data rows from the viame csv
 
     version: int
-    a data format version number as determined by `determine_viame_version`
+        a data format version number as determined by `determine_viame_version`
 
     fps: int
-    the fps read from the metadata headers
+        the fps read from the metadata headers
 
     Returns
     ---------
     Iterable[Sequence[str]]
-    A "fixed" set of data with isotimestamps that the rest of the processing
-    expects.
+        A "fixed" set of data with isotimestamps that the rest of the processing
+        expects.
     '''
     '''
     for row in viame_rows:
