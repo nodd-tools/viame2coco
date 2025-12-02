@@ -1,7 +1,9 @@
 import pycocowriter
 import csv
 import json
+import re
 import itertools
+import datetime
 from collections.abc import Iterable
 import pycocowriter.coco
 from pycocowriter.csv2coco import Iterable2COCO, Iterable2COCOConfig
@@ -95,10 +97,91 @@ def read_viame_metadata_rows(
         metadata_rows.append(row)
     return metadata_rows, iter(())
 
+
+V1_METADATA_HEADER_PATTERN = re.compile(
+    r"^# 1: Detection or Track-id"
+    r"2: Video or Image Identifier"
+    r"3: Unique Frame Identifier"
+    r"4-7: Img-bbox\(TL_xTL_yBR_xBR_y\)"
+    r"8: Detection or Length Confidence"
+    r"9: Target Length \(0 or -1 if invalid\)"
+    r"10-11\+: Repeated SpeciesConfidence Pairs or Attributes"
+    r"# metadata - fps: (\d+)"
+    r"# Written on ([A-Za-z]{3} [A-Za-z]{3} \d{1,2} "
+    r"\d{2}:\d{2}:\d{2} \d{4}) by: dive:python"
+)
+V2_METADATA_HEADER_PATTERN = re.compile(
+    r"^# 1: Detection or Track-id"
+    r"2: Video or Image Identifier"
+    r"3: Unique Frame Identifier"
+    r"4-7: Img-bbox\(TL_xTL_yBR_xBR_y\)"
+    r"8: Detection or Length Confidence"
+    r"9: Target Length \(0 or -1 if invalid\)"
+    r"10-11\+: Repeated SpeciesConfidence Pairs or Attributes"
+    r"# metadatafps: (\d+)"
+    r'exported_by: "dive:typescript"'
+    r'exported_time: "(\d{1,2}/\d{1,2}/\d{4}, \d{1,2}:\d{2}:\d{2} [AP]M)"'
+)
+V3_METADATA_HEADER_PATTERN = re.compile(
+    r"^# 1: Detection or Track-id"
+    r"2: Video or Image Identifier"
+    r"3: Unique Frame Identifier"
+    r"4-7: Img-bbox\(TL_xTL_yBR_xBR_y\)"
+    r"8: Detection or Length Confidence"
+    r"9: Target Length \(0 or -1 if invalid\)"
+    r"10-11\+: Repeated SpeciesConfidence Pairs or Attributes"
+    r"#meta fps=(\d+)"
+    r"# Written on (\d{1,2}/\d{1,2}/\d{4} "
+    r"\d{1,2}:\d{2}:\d{2} [AP]M) by dive_writer:typescript"
+)
+V4_METADATA_HEADER_PATTERN = re.compile(
+    r'^# 1: Detection or Track-id'
+    r'2: Video or Image Identifier'
+    r'3: Unique Frame Identifier'
+    r'4-7: Img-bbox\(TL_xTL_yBR_xBR_y\)'
+    r'8: Detection or Length Confidence'
+    r'9: Target Length \(0 or -1 if invalid\)'
+    r'10-11\+: Repeated SpeciesConfidence Pairs or Attributes'
+    r'# metadata'
+    r'fps: (\d+)'
+    r'exported_by: "dive:python"'
+    r'exported_time: "([A-Za-z]{3} [A-Za-z]{3} \d{1,2} \d{2}:\d{2}:\d{2} \d{4})"$'
+)
+V5_METADATA_HEADER_PATTERN = re.compile(
+    r'^# 1: Detection or Track-id'
+    r'2: Video or Image Identifier'
+    r'3: Unique Frame Identifier'
+    r'4-7: Img-bbox\(TL_xTL_yBR_xBR_y\)'
+    r'8: Detection or Length Confidence'
+    r'9: Target Length \(0 or -1 if invalid\)'
+    r'10-11\+: Repeated SpeciesConfidence Pairs or Attributes'
+    r'# metadata'
+    r'fps:\s*([0-9]*\.?[0-9]+)'
+    r'exported_by: "dive:typescript"'
+    r'exported_time: "(\d{1,2}/\d{1,2}/\d{4}, '
+    r'\d{1,2}:\d{2}:\d{2} [AP]M)"$'
+)
+V6_METADATA_HEADER_PATTERN = re.compile(
+    r'^# 1: Detection or Track-id'
+    r'2: Video or Image Identifier'
+    r'3: Unique Frame Identifier'
+    r'4-7: Img-bbox\(TL_xTL_yBR_xBR_y\)'
+    r'8: Detection or Length Confidence'
+    r'9: Target Length \(0 or -1 if invalid\)'
+    r'10-11\+: Repeated SpeciesConfidence Pairs or Attributes'
+    r'# metadata - fps: ([0-9]+)'
+    r'# Written on ([A-Za-z]{3} [A-Za-z]{3} '
+    r'\d{1,2} \d{2}:\d{2}:\d{2} \d{4}) by: '
+    r'viame_web_csv_writer:python$'
+)
+
 def determine_viame_version(viame_metadata_rows: list[Sequence[str]]) -> int:
     '''
     Determine the viame "version" from the metadata rows.
     We need these to figure out how to parse the remainder of the file
+
+    It's not 100% clear that we can determine the version just from the metadata.
+    Fingers crossed.
 
     Parameters
     ----------
@@ -109,8 +192,89 @@ def determine_viame_version(viame_metadata_rows: list[Sequence[str]]) -> int:
     ----------
     version: int
     a pseudo-version of VIAME that we can use to parse the rest of the file
+
+    fps: int | None
+    the framerate of the annotations, read from the metadata or None if no fps present
+
+    timestamp: datetime.datetime | None
+    the date/time stamp of the annotations, read from the metadata or None if no timestamp present
     '''
-    logger.info('\n'.join(map(', '.join, metadata_rows)))
+    version, fps, timestamp = None, None, None
+    raw_metadata = ''.join(map(''.join, viame_metadata_rows))
+    logger.info(raw_metadata)
+    if m := V1_METADATA_HEADER_PATTERN.fullmatch(raw_metadata):
+        version = 1
+        fps = float(m.group(1))
+        timestamp = datetime.datetime.strptime(m.group(2), "%a %b %d %H:%M:%S %Y")
+    elif m := V2_METADATA_HEADER_PATTERN.fullmatch(raw_metadata):
+        version = 2
+        fps = float(m.group(1))
+        timestamp = datetime.datetime.strptime(m.group(2), "%m/%d/%Y, %I:%M:%S %p")
+    elif m := V3_METADATA_HEADER_PATTERN.fullmatch(raw_metadata):
+        version = 3
+        fps = float(m.group(1))
+        timestamp = datetime.datetime.strptime(m.group(2), "%m/%d/%Y %I:%M:%S %p")
+    elif m := V4_METADATA_HEADER_PATTERN.fullmatch(raw_metadata):
+        version = 4
+        fps = float(m.group(1))
+        timestamp = datetime.datetime.strptime(m.group(2), "%a %b %d %H:%M:%S %Y")
+    elif m := V5_METADATA_HEADER_PATTERN.fullmatch(raw_metadata):
+        version = 5
+        fps = float(m.group(1))
+        timestamp = datetime.datetime.strptime(m.group(2), "%m/%d/%Y, %I:%M:%S %p")
+    elif m := V6_METADATA_HEADER_PATTERN.fullmatch(raw_metadata):
+        version = 6
+        fps = float(m.group(1))
+        timestamp = datetime.datetime.strptime(m.group(2), "%a %b %d %H:%M:%S %Y")
+    return version, fps, timestamp
+
+
+def deal_with_viame_timestamps(viame_rows: Iterable[Sequence[str]], version: int, fps: int) -> Iterable[Sequence[str]]:
+    '''
+    The frame timestamps produced by VIAME are frequently wrong.
+    Unfortunately, it is difficult to tell the difference, so we
+    just have to not rely on this column, and compute the timestamp from
+    the frame number and framerate.
+    
+    Parameters
+    ----------
+    viame_rows: Iterable[Sequence[str]]
+    The actual data rows from the viame csv
+
+    version: int
+    a data format version number as determined by `determine_viame_version`
+
+    fps: int
+    the fps read from the metadata headers
+
+    Returns
+    ---------
+    Iterable[Sequence[str]]
+    A "fixed" set of data with isotimestamps that the rest of the processing
+    expects.
+    '''
+    '''
+    for row in viame_rows:
+        try:
+            dt = datetime.time.fromisoformat(row[1]) # maybe it's in isoformat, this is fine, leave it be
+            logger.debug(f'read timestamp: {row[1]}, result: {dt.isoformat()}')
+            yield row
+        except ValueError as e:
+            # probably it's garbage.  Compute a new timestamp column from fps and frame
+            seconds = int(row[2]) / fps
+            timestamp = (datetime.datetime.min + datetime.timedelta(seconds=seconds)).time()
+            new_row1 = timestamp.isoformat()
+            logger.debug(f'recovering timestamp err: {row[1]}, fps: {fps}, frame: {row[2]}, result: {new_row1}')
+            row[1] = new_row1
+            yield row
+    '''
+    for row in viame_rows:
+        seconds = int(row[2]) / fps
+        timestamp = (datetime.datetime.min + datetime.timedelta(seconds=seconds)).time()
+        new_row1 = timestamp.isoformat()
+        logger.debug(f'recovering timestamp err: {row[1]}, fps: {fps}, frame: {row[2]}, result: {new_row1}')
+        row[1] = new_row1
+        yield row
 
 def passrows(iterable: Iterable, n: int = 0) -> Iterable:
     '''
@@ -181,7 +345,8 @@ def viame2coco_data(
     with open(viame_csv_file, 'r') as f:
         reader = csv.reader(f)
         metadata, data = read_viame_metadata_rows(reader)
-        viame_version = determine_viame_version(metadata)
+        viame_version, fps, timestamp = determine_viame_version(metadata)
+        data = deal_with_viame_timestamps(data, viame_version, fps)
         if video_file is not None:            
             #TODO probably should hoist this into a higher function            
             if video_frame_outfile_dir is None:
@@ -232,7 +397,7 @@ def viame2coco(
         the version of this dataset, as a string
         defaults to '0.1'
     '''
-
+    
     now = datetime.datetime.now(datetime.timezone.utc)
     coco_info = COCOInfo(
         year = now.year,
@@ -240,7 +405,7 @@ def viame2coco(
         description = description, 
         date_created = now
     )
-
+    logger.info(f"converting video {video_file} and annotations {viame_csv_file}")
     images, annotations, categories = viame2coco_data(
         viame_csv_file, video_file=video_file, 
         video_frame_outfile_dir=video_frame_outfile_dir, 
