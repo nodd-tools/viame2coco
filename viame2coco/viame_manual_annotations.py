@@ -190,7 +190,7 @@ def extract_viame_video_annotations(
     viame_csv: Iterable[Sequence]
         the data rows from a VIAME-style annotation csv
         should not include the headers
-    video_filename: str
+    video_file: str
         the file name of the video.  This will be formatted into the
         outfile_format as `video_filename`.  See that arg for more details.
     outfile_format: str | None

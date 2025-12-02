@@ -378,7 +378,7 @@ def viame2coco(
     ----------
     viame_csv_file: str
         the file path location for the VIAME-style annotation csv
-    descriptions: str
+    description: str
         the description of this dataset
     video_file: str | None
         the file path location for the video which has been
