@@ -1215,22 +1215,7 @@ the frame number and framerate.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>The</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>The actual data rows from the viame csv</p>
               </div>
             </td>
             <td>
@@ -1246,22 +1231,7 @@ the frame number and framerate.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>a</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>a data format version number as determined by <code>determine_viame_version</code></p>
               </div>
             </td>
             <td>
@@ -1277,22 +1247,7 @@ the frame number and framerate.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>the</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>the fps read from the metadata headers</p>
               </div>
             </td>
             <td>
@@ -1318,27 +1273,8 @@ the frame number and framerate.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                  <code>A &#34;fixed&#34; set of data with isotimestamps that the rest of the processing</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                  <code>expects.</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>A "fixed" set of data with isotimestamps that the rest of the processing
+expects.</p>
               </div>
             </td>
           </tr>
@@ -1403,19 +1339,19 @@ the frame number and framerate.</p>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    viame_rows: Iterable[Sequence[str]]</span>
-<span class="sd">    The actual data rows from the viame csv</span>
+<span class="sd">        The actual data rows from the viame csv</span>
 
 <span class="sd">    version: int</span>
-<span class="sd">    a data format version number as determined by `determine_viame_version`</span>
+<span class="sd">        a data format version number as determined by `determine_viame_version`</span>
 
 <span class="sd">    fps: int</span>
-<span class="sd">    the fps read from the metadata headers</span>
+<span class="sd">        the fps read from the metadata headers</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    ---------</span>
 <span class="sd">    Iterable[Sequence[str]]</span>
-<span class="sd">    A &quot;fixed&quot; set of data with isotimestamps that the rest of the processing</span>
-<span class="sd">    expects.</span>
+<span class="sd">        A &quot;fixed&quot; set of data with isotimestamps that the rest of the processing</span>
+<span class="sd">        expects.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    for row in viame_rows:</span>
@@ -1482,22 +1418,7 @@ Fingers crossed.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>rows</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>rows read by <code>read_viame_metadata_rows</code></p>
               </div>
             </td>
             <td>
@@ -1523,17 +1444,7 @@ Fingers crossed.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-<td></td>            <td>
-                  <code>a pseudo-version of VIAME that we can use to parse the rest of the file</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>a pseudo-version of VIAME that we can use to parse the rest of the file</p>
               </div>
             </td>
           </tr>
@@ -1543,17 +1454,7 @@ Fingers crossed.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-<td></td>            <td>
-                  <code>the framerate of the annotations, read from the metadata or None if no fps present</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>the framerate of the annotations, read from the metadata or None if no fps present</p>
               </div>
             </td>
           </tr>
@@ -1563,17 +1464,7 @@ Fingers crossed.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-<td></td>            <td>
-                  <code>the date/time stamp of the annotations, read from the metadata or None if no timestamp present</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>the date/time stamp of the annotations, read from the metadata or None if no timestamp present</p>
               </div>
             </td>
           </tr>
@@ -1645,18 +1536,18 @@ Fingers crossed.</p>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    viame_metadata_rows: list[Sequence[str]]</span>
-<span class="sd">    rows read by `read_viame_metadata_rows`</span>
+<span class="sd">        rows read by `read_viame_metadata_rows`</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    ----------</span>
 <span class="sd">    version: int</span>
-<span class="sd">    a pseudo-version of VIAME that we can use to parse the rest of the file</span>
+<span class="sd">        a pseudo-version of VIAME that we can use to parse the rest of the file</span>
 
 <span class="sd">    fps: int | None</span>
-<span class="sd">    the framerate of the annotations, read from the metadata or None if no fps present</span>
+<span class="sd">        the framerate of the annotations, read from the metadata or None if no fps present</span>
 
 <span class="sd">    timestamp: datetime.datetime | None</span>
-<span class="sd">    the date/time stamp of the annotations, read from the metadata or None if no timestamp present</span>
+<span class="sd">        the date/time stamp of the annotations, read from the metadata or None if no timestamp present</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">version</span><span class="p">,</span> <span class="n">fps</span><span class="p">,</span> <span class="n">timestamp</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
     <span class="n">raw_metadata</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">,</span> <span class="n">viame_metadata_rows</span><span class="p">))</span>
@@ -2639,22 +2530,7 @@ csv</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>a</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>a row read in from a VIAME-style annotation csv</p>
               </div>
             </td>
             <td>
@@ -2680,17 +2556,7 @@ csv</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-<td></td>            <td>
-                  <code>true if the row arg is a metadata row</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>true if the row arg is a metadata row</p>
               </div>
             </td>
           </tr>
@@ -2724,12 +2590,12 @@ csv</p>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    row: Sequence[str]</span>
-<span class="sd">    a row read in from a VIAME-style annotation csv</span>
+<span class="sd">        a row read in from a VIAME-style annotation csv</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    is_metadata: bool</span>
-<span class="sd">    true if the row arg is a metadata row</span>
+<span class="sd">        true if the row arg is a metadata row</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">is_metadata</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">is_metadata</span>
@@ -2908,22 +2774,7 @@ of the annotations iterator.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>an</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>an iterable of rows as read from a VIAME-style annotation csv output</p>
               </div>
             </td>
             <td>
@@ -2949,17 +2800,7 @@ of the annotations iterator.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-<td></td>            <td>
-                  <code>the metadata rows</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>the metadata rows</p>
               </div>
             </td>
           </tr>
@@ -2969,17 +2810,7 @@ of the annotations iterator.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-<td></td>            <td>
-                  <code>the same iterable of rows, but having skipped any metadata rows</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>the same iterable of rows, but having skipped any metadata rows</p>
               </div>
             </td>
           </tr>
@@ -3024,15 +2855,15 @@ of the annotations iterator.</p>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    viame_rows: Iterable[Sequence[str]]</span>
-<span class="sd">    an iterable of rows as read from a VIAME-style annotation csv output</span>
+<span class="sd">        an iterable of rows as read from a VIAME-style annotation csv output</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    metadata_rows: list[Sequence[str]]</span>
-<span class="sd">    the metadata rows</span>
+<span class="sd">        the metadata rows</span>
 
 <span class="sd">    viame_rows: Iterable[Sequence[str]]</span>
-<span class="sd">    the same iterable of rows, but having skipped any metadata rows</span>
+<span class="sd">        the same iterable of rows, but having skipped any metadata rows</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">metadata_rows</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">viame_rows</span><span class="p">:</span>
@@ -3081,22 +2912,7 @@ as read from a VIAME output csv</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>an</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>an iterable of rows as read from a VIAME-style annotation csv output</p>
               </div>
             </td>
             <td>
@@ -3122,17 +2938,7 @@ as read from a VIAME output csv</p>
             </td>
             <td>
               <div class="doc-md-description">
-                
-              </div>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-<td></td>            <td>
-                  <code>the same iterable of rows, but having skipped any metadata rows</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                
+                <p>the same iterable of rows, but having skipped any metadata rows</p>
               </div>
             </td>
           </tr>
@@ -3171,12 +2977,12 @@ as read from a VIAME output csv</p>
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    viame_rows: Iterable[Sequence[str]]</span>
-<span class="sd">    an iterable of rows as read from a VIAME-style annotation csv output</span>
+<span class="sd">        an iterable of rows as read from a VIAME-style annotation csv output</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    viame_rows: Iterable[Sequence[str]]</span>
-<span class="sd">    the same iterable of rows, but having skipped any metadata rows</span>
+<span class="sd">        the same iterable of rows, but having skipped any metadata rows</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">row</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">viame_rows</span><span class="p">)</span>
     <span class="k">while</span> <span class="n">is_viame_metadata_row</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
