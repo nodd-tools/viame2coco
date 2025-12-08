@@ -23,10 +23,10 @@ viame_csv_config_default = {
     'filename': 1,
     'label': 9, 
     'bbox_tlbr': {
-        'tlx': 2,
-        'tly': 3,
-        'brx': 4,
-        'bry': 5
+        'tlx': 3,
+        'tly': 4,
+        'brx': 5,
+        'bry': 6
     }
 }
 
