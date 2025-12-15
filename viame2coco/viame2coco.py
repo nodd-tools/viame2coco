@@ -301,7 +301,8 @@ def viame2coco_data(
         viame_csv_file: str, 
         video_file: str | None = None, 
         video_frame_outfile_dir: str | None = None, 
-        viame_csv_config : dict | None = None) -> tuple[
+        viame_csv_config : dict | None = None,
+        min_confidence: float = 1) -> tuple[
             list[pycocowriter.coco.COCOImage],
             list[pycocowriter.coco.COCOAnnotation],
             list[pycocowriter.coco.COCOCategory]
@@ -329,6 +330,8 @@ def viame2coco_data(
         and in which columns they are located. 
         Passed to pycocowriter.csv2coco.Iterable2COCOConfig. 
         If None, then viame2coco.viame2coco.viame_csv_config is used
+    min_confidence: float
+        the minimum confidence at which an annotation is considered "manual"
     
     Returns
     -------
@@ -353,7 +356,7 @@ def viame2coco_data(
                 csv_location = os.path.split(viame_csv_file)[0]
                 video_frame_outfile_dir = csv_location
             data = extract_viame_video_annotations(
-                data, video_file, outfile_dir=video_frame_outfile_dir
+                data, video_file, outfile_dir=video_frame_outfile_dir, min_confidence = min_confidence
             )
         if viame_csv_config is None:
             viame_csv_config = viame_csv_config_default
@@ -370,7 +373,8 @@ def viame2coco(
         video_frame_outfile_dir: str | None = None,
         viame_csv_config : dict | None = None, 
         license: pycocowriter.coco.COCOLicense = COCO_CC0_LICENSE, 
-        version: str = '0.1') -> pycocowriter.coco.COCOData:
+        version: str = '0.1',
+        min_confidence: float = 1) -> pycocowriter.coco.COCOData:
     '''
     Convert a VIAME-style annotation csv into COCO format
 
@@ -396,6 +400,8 @@ def viame2coco(
     version: str
         the version of this dataset, as a string
         defaults to '0.1'
+    min_confidence: float
+        the minimum confidence at which an annotation is considered "manual"
     '''
     
     now = datetime.datetime.now(datetime.timezone.utc)
@@ -409,7 +415,8 @@ def viame2coco(
     images, annotations, categories = viame2coco_data(
         viame_csv_file, video_file=video_file, 
         video_frame_outfile_dir=video_frame_outfile_dir, 
-        viame_csv_config = viame_csv_config
+        viame_csv_config = viame_csv_config,
+        min_confidence = min_confidence
     )
 
     return COCOData(

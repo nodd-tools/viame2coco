@@ -92,7 +92,7 @@ def extract_frame_microseconds(
     return image
 
 VIAME_CONFIDENCE_COL = 7
-def viame_is_manual_annotation(viame_csv_row: Sequence) -> bool:
+def viame_is_manual_annotation(viame_csv_row: Sequence, min_confidence: float = 1) -> bool:
     '''
     returns whether a given row in a VIAME-style annotation output csv
     represents a manual annotation or an automated annotation.
@@ -103,6 +103,8 @@ def viame_is_manual_annotation(viame_csv_row: Sequence) -> bool:
     ----------
     viame_csv_row: Sequence
         a row read from a VIAME-style annotation csv
+    min_confidence: float
+        the confidence at which an annotation is determined to be "manual"
 
     Returns
     -------
@@ -112,7 +114,7 @@ def viame_is_manual_annotation(viame_csv_row: Sequence) -> bool:
     is_manual_annotation = (
         (len(viame_csv_row) > VIAME_CONFIDENCE_COL) 
             and 
-        (float(viame_csv_row[VIAME_CONFIDENCE_COL]) == 1)
+        (float(viame_csv_row[VIAME_CONFIDENCE_COL]) >= min_confidence)
     )
     return is_manual_annotation
 
@@ -154,7 +156,9 @@ def construct_image_filename_from_video_frame(
     return frame_filename
 
 def filter_viame_manual_annotations(
-        viame_csv: Iterable[Sequence]) -> Iterable[Sequence]:
+        viame_csv: Iterable[Sequence],
+        min_confidence: float = 1
+    ) -> Iterable[Sequence]:
     '''
     filters an iterable of data rows read from a VIAME-style annotation csv
     to only rows that contain manual annotations
@@ -164,6 +168,8 @@ def filter_viame_manual_annotations(
     viame_csv: Iterable[Sequence]
         the data rows from a VIAME-style annotation csv
         should not include the headers
+    min_confidence: float
+        the minimum confidence at which an annotation is considered "manual"
     
     Returns
     -------
@@ -171,14 +177,15 @@ def filter_viame_manual_annotations(
         the data rows in the input only when the annotations
         are manual, skipping any automated annotations
     '''
-    yield from filter(viame_is_manual_annotation, viame_csv)
+    yield from filter(lambda row: viame_is_manual_annotation(row, min_confidence = min_confidence), viame_csv)
 
 VIAME_VIDEO_TIME_COL = 1
 def extract_viame_video_annotations(
         viame_csv: Iterable[Sequence], 
         video_file: str, 
         outfile_format: str | None = None, 
-        outfile_dir: str | None = None) -> Iterable[Sequence]:
+        outfile_dir: str | None = None,
+        min_confidence: float = 1) -> Iterable[Sequence]:
     '''
     extract the manual annotations and frames from a VIAME-style
     annotaiton csv
@@ -197,6 +204,8 @@ def extract_viame_video_annotations(
         see `construct_image_filename_from_video_frame` signature
     outfile_dir: str | None
         see `construct_image_filename_from_video_frame` signature
+    min_confidence: float
+        the minimum confidence at which an annotation is considered "manual"
 
     Returns
     -------
@@ -213,7 +222,7 @@ def extract_viame_video_annotations(
     video_filename_leaf = os.path.split(video_file)[1]
     if outfile_dir is not None:
         os.makedirs(outfile_dir, exist_ok=True)
-    for row in filter_viame_manual_annotations(viame_csv):
+    for row in filter_viame_manual_annotations(viame_csv, min_confidence = min_confidence):
         frame_time = datetime.time.fromisoformat(row[VIAME_VIDEO_TIME_COL])
         microseconds = time2micros(frame_time)
         frame_filename = construct_image_filename_from_video_frame(video_filename_leaf, frame_time, outfile_format, outfile_dir)
