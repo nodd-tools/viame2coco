@@ -105,7 +105,10 @@ def convert_viame_to_kwcoco(csv_path, output_json_path, video_name=None):
 
     dset.fpath = output_json_path
     dset.dump(dset.fpath, newlines=True)
-    logger.info(f"Saved: {output_json_path} | Images: {dset.n_images} | Annotations: {dset.n_annotations}")
+    
+    n_imgs = len(dset.index.imgs)
+    n_anns = len(dset.index.anns)
+    logger.info(f"Saved: {output_json_path} | Images: {n_imgs} | Annotations: {n_anns}")
     
     return dset
 
