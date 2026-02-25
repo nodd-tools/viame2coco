@@ -99,6 +99,9 @@ def convert_viame_to_kwcoco(csv_path, output_json_path, video_name=None):
             }
             
             if track_id >= 0: 
+                # Explicitly register the track to avoid kwcoco warnings
+                if track_id not in dset.index.tracks:
+                    dset.add_track(id=track_id, name=str(track_id))
                 ann['track_id'] = track_id
                 
             dset.add_annotation(**ann)
