@@ -12,7 +12,8 @@ authors = [
 dependencies = [
   "pycocowriter",
   "opencv-python",
-  "pillow"
+  "pillow",
+  "kwcoco"
 ]
 readme = "README.md"
 classifiers = [
