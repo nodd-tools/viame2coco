@@ -349,8 +349,11 @@ def viame2coco_data(
         reader = csv.reader(f)
         metadata, data = read_viame_metadata_rows(reader)
         viame_version, fps, timestamp = determine_viame_version(metadata)
-        data = deal_with_viame_timestamps(data, viame_version, fps)
-        if video_file is not None:            
+        if video_file is not None:           
+            if fps is None:
+                raise Exception("Video files must have framerate info.  Please ensure that your VIAME csv header contains fps info")
+            data = deal_with_viame_timestamps(data, viame_version, fps)
+
             #TODO probably should hoist this into a higher function            
             if video_frame_outfile_dir is None:
                 csv_location = os.path.split(viame_csv_file)[0]
